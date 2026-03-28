@@ -9,6 +9,7 @@
     domain_name: "sriharidevops17.online"
     instances:
       - mongodb
+      - redis
   tasks:
     - name: create ec2 instance
       amazon.aws.ec2_instance:
@@ -25,23 +26,23 @@
       ansible.builtin.debug:
         msg: "{{ ec2_output }}"
 
-    - name: print the public ip address
-      ansible.builtin.debug:
-        msg: "{{ item.instances[0].public_ip_address }}"
-      loop: "{{ ec2_output.results }}"
+    #- name: print the public ip address
+    #ansible.builtin.debug:
+    #msg: "{{ item.instances[0].public_ip_address }}"
+    #loop: "{{ ec2_output.results }}"
 
-    - name: print the private ip address
-      ansible.builtin.debug:
-        msg: "{{ item.instances[0].private_ip_address }}"
-      loop: "{{ ec2_output.results }}"
+    #- name: print the private ip address
+    #ansible.builtin.debug:
+    #msg: "{{ item.instances[0].private_ip_address }}"
+    #loop: "{{ ec2_output.results }}"
 
-    - name: create route 53 record
-      amazon.aws.route53:
-        state: present
-        zone: "{{domain_name}}"
-        record: "{{ item.item }}.{{ domain_name }}" #mongodb.sriharidevops17.online
-        type: A
-        ttl: 1
-        value: "{{ item.instances[0].private_ip_address }}"
-        overwrite: true
-      loop: "{{ ec2_output.results }}"
+    # - name: create route 53 record
+    #   amazon.aws.route53:
+    #     state: present
+    #     zone: "{{domain_name}}"
+    #     record: "{{ item.item }}.{{ domain_name }}" #mongodb.sriharidevops17.online
+    #     type: A
+    #     ttl: 1
+    #     value: "{{ item.instances[0].private_ip_address }}"
+    #     overwrite: true
+    #   loop: "{{ ec2_output.results }}"
