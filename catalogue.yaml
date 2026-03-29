@@ -58,7 +58,7 @@
         state: present
 
     - name: connect to mongodb catalogue
-      ansible.builtin.command: mongosh mongodb.sriharidevops17.online --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
+      ansible.builtin.command: mongosh mongodb.sriharidevops17.online --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
         register: catalogue_output
 
     # - name: evaluate catalogue database
