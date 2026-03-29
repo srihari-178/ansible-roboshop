@@ -63,6 +63,7 @@
 
     - name: evaluate catalogue database
       community.mongodb.mongodb_shell:
+        login_host: mongodb.sriharidevops17.online
         eval: db.getMongo().getDBNames().indexOf('catalogue')
         register: catalogue_output
 
