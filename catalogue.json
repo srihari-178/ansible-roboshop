@@ -1,0 +1,20 @@
+{
+  "changed": true,
+  "cmd": [
+    "mongosh",
+    "mongodb.sriharidevops17.online",
+    "--quiet",
+    "--eval",
+    "db.getMongo().getDBNames().indexOf('catalogue')"
+  ],
+  "delta": "0:00:01.004958",
+  "end": "2026-03-30 03:58:36.984791",
+  "failed": false,
+  "msg": "",
+  "rc": 0,
+  "start": "2026-03-30 03:58:35.979833",
+  "stderr": "",
+  "stderr_lines": [],
+  "stdout": "-1",
+  "stdout_lines": ["-1"]
+}
