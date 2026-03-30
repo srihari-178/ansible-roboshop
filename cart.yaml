@@ -1,6 +1,6 @@
 ---
-- name: setup catalogue server
-  hosts: catalogue
+- name: setup cart server
+  hosts: cart
   become: yes
   tasks:
     - name: disable default nodejs
@@ -33,19 +33,19 @@
         state: directory
         path: /app
 
-    - name: delete catalogue file
+    - name: delete cart file
       ansible.builtin.file:
         path: /app
         state: absent
 
-    - name: download catalogue application
+    - name: download cart application
       ansible.builtin.get_url:
-        url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
-        dest: /tmp/catalogue.zip
+        url: https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip
+        dest: /tmp/cart.zip
 
-    - name: extract catalogue application
+    - name: extract cart application
       ansible.builtin.unarchive:
-        src: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
+        src: https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip
         dest: /app
         remote_src: yes
 
@@ -53,10 +53,10 @@
       community.general.npm:
         path: /app
 
-    - name: copy catalogue service
+    - name: copy cart service
       ansible.builtin.copy:
-        src: catalogue.service
-        dest: /etc/systemd/system/catalogue.service
+        src: cart.service
+        dest: /etc/systemd/system/cart.service
 
     - name: copy mongo repo
       ansible.builtin.copy:
@@ -68,33 +68,33 @@
         name: mongodb-mongosh
         state: present
 
-    - name: connect to mongodb catalogue
-      ansible.builtin.command: mongosh mongodb.sriharidevops17.online --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
-      register: catalogue_output
+    - name: connect to mongodb cart
+      ansible.builtin.command: mongosh mongodb.sriharidevops17.online --quiet --eval "db.getMongo().getDBNames().indexOf('cart')"
+      register: cart_output
 
-    # - name: evaluate catalogue database
+    # - name: evaluate cart database
     #   community.mongodb.mongodb_shell:
     #     login_host: mongodb.sriharidevops17.online
-    #     eval: db.getMongo().getDBNames().indexOf('catalogue')
-    #     register: catalogue_output
+    #     eval: db.getMongo().getDBNames().indexOf('cart')
+    #     register: cart_output
 
-    # - name: print catalogue output
+    # - name: print cart output
     #   ansible.builtin.debug:
-    #     msg: "{{ catalogue_output }}"
+    #     msg: "{{ cart_output }}"
 
     - name: load products into mongodb
       ansible.builtin.shell: mongosh --host mongodb.sriharidevops17.online </app/db/master-data.js
-      when: catalogue_output.stdout | int < 0
+      when: cart_output.stdout | int < 0
 
-    # - name: start and enable catalogue
+    # - name: start and enable cart
     #   ansible.builtin.service:
-    #     name: catalogue
+    #     name: cart
     #     enabled: yes
     #     state: started
 
     - name: daemon reload enable and start
       ansible.builtin.systemd_service:
-        name: catalogue
+        name: cart
         enabled: true
         state: started
         daemon_reload: true
