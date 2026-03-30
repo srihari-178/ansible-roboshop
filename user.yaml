@@ -1,6 +1,6 @@
 ---
-- name: setup catalogue server
-  hosts: catalogue
+- name: setup user server
+  hosts: user
   become: yes
   tasks:
     - name: disable default nodejs
@@ -33,19 +33,19 @@
         state: directory
         path: /app
 
-    - name: delete catalogue file
+    - name: delete user file
       ansible.builtin.file:
-        path: /tmp/catalogue.zip
+        path: /tmp/user.zip
         state: absent
 
-    - name: download catalogue application
+    - name: download user application
       ansible.builtin.get_url:
-        url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
-        dest: /tmp/catalogue.zip
+        url: https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip
+        dest: /tmp/user.zip
 
-    - name: extract catalogue application
+    - name: extract user application
       ansible.builtin.unarchive:
-        src: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
+        src: https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip
         dest: /app
         remote_src: yes
 
@@ -53,10 +53,10 @@
       community.general.npm:
         path: /app
 
-    - name: copy catalogue service
+    - name: copy user service
       ansible.builtin.copy:
-        src: catalogue.service
-        dest: /etc/systemd/system/catalogue.service
+        src: user.service
+        dest: /etc/systemd/system/user.service
 
     - name: copy mongo repo
       ansible.builtin.copy:
@@ -68,33 +68,33 @@
         name: mongodb-mongosh
         state: present
 
-    - name: connect to mongodb catalogue
-      ansible.builtin.command: mongosh mongodb.sriharidevops17.online --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
-      register: catalogue_output
+    - name: connect to mongodb user
+      ansible.builtin.command: mongosh mongodb.sriharidevops17.online --quiet --eval "db.getMongo().getDBNames().indexOf('user')"
+      register: user_output
 
-    # - name: evaluate catalogue database
+    # - name: evaluate user database
     #   community.mongodb.mongodb_shell:
     #     login_host: mongodb.sriharidevops17.online
-    #     eval: db.getMongo().getDBNames().indexOf('catalogue')
-    #     register: catalogue_output
+    #     eval: db.getMongo().getDBNames().indexOf('user')
+    #     register: user_output
 
-    # - name: print catalogue output
+    # - name: print user output
     #   ansible.builtin.debug:
-    #     msg: "{{ catalogue_output }}"
+    #     msg: "{{ user_output }}"
 
     - name: load products into mongodb
       ansible.builtin.shell: mongosh --host mongodb.sriharidevops17.online </app/db/master-data.js
-      when: catalogue_output.stdout | int < 0
+      when: user_output.stdout | int < 0
 
-    # - name: start and enable catalogue
+    # - name: start and enable user
     #   ansible.builtin.service:
-    #     name: catalogue
+    #     name: user
     #     enabled: yes
     #     state: started
 
     - name: daemon reload enable and start
       ansible.builtin.systemd_service:
-        name: catalogue
+        name: user
         enabled: true
         state: started
         daemon_reload: true
