@@ -72,6 +72,13 @@
       ansible.builtin.command: mongosh mongodb.sriharidevops17.online --quiet --eval "db.getMongo().getDBNames().indexOf('users')"
       register: user_output
 
+    - name: verify db folder
+      ansible.builtin.command: ls -l /app/db
+      register: db_check
+
+    - debug:
+        var: db_check.stdout
+
     # - name: evaluate user database
     #   community.mongodb.mongodb_shell:
     #     login_host: mongodb.sriharidevops17.online
