@@ -58,50 +58,50 @@
         src: user.service
         dest: /etc/systemd/system/user.service
 
-    - name: copy mongo repo
-      ansible.builtin.copy:
-        src: mongo.repo
-        dest: /etc/yum.repos.d/mongo.repo
+    # - name: copy mongo repo
+    #   ansible.builtin.copy:
+    #     src: mongo.repo
+    #     dest: /etc/yum.repos.d/mongo.repo
 
-    - name: install mongodb client
-      ansible.builtin.package:
-        name: mongodb-mongosh
-        state: present
+    # - name: install mongodb client
+    #   ansible.builtin.package:
+    #     name: mongodb-mongosh
+    #     state: present
 
-    - name: connect to mongodb user
-      ansible.builtin.command: mongosh mongodb.sriharidevops17.online --quiet --eval "db.getMongo().getDBNames().indexOf('users')"
-      register: user_output
+    # - name: connect to mongodb user
+    #   ansible.builtin.command: mongosh mongodb.sriharidevops17.online --quiet --eval "db.getMongo().getDBNames().indexOf('users')"
+    #   register: user_output
 
-    - name: verify db folder
-      ansible.builtin.command: ls -l /app/db
-      register: db_check
+    # - name: verify db folder
+    #   ansible.builtin.command: ls -l /app/db
+    #   register: db_check
 
-    - debug:
-        var: db_check.stdout
+    # - debug:
+    #     var: db_check.stdout
 
-    # - name: evaluate user database
-    #   community.mongodb.mongodb_shell:
-    #     login_host: mongodb.sriharidevops17.online
-    #     eval: db.getMongo().getDBNames().indexOf('user')
-    #     register: user_output
+    # # - name: evaluate user database
+    # #   community.mongodb.mongodb_shell:
+    # #     login_host: mongodb.sriharidevops17.online
+    # #     eval: db.getMongo().getDBNames().indexOf('user')
+    # #     register: user_output
 
-    # - name: print user output
-    #   ansible.builtin.debug:
-    #     msg: "{{ user_output }}"
+    # # - name: print user output
+    # #   ansible.builtin.debug:
+    # #     msg: "{{ user_output }}"
 
-    - name: load products into mongodb
-      ansible.builtin.shell: mongosh --host mongodb.sriharidevops17.online </app/db/master-data.js
-      when: user_output.stdout | int < 0
+    # - name: load products into mongodb
+    #   ansible.builtin.shell: mongosh --host mongodb.sriharidevops17.online </app/db/master-data.js
+    #   when: user_output.stdout | int < 0
 
-    # - name: start and enable user
-    #   ansible.builtin.service:
-    #     name: user
-    #     enabled: yes
-    #     state: started
-    - name: copy user service
-      ansible.builtin.copy:
-        src: user.service
-        dest: /etc/systemd/system/user.service
+    # # - name: start and enable user
+    # #   ansible.builtin.service:
+    # #     name: user
+    # #     enabled: yes
+    # #     state: started
+    # - name: copy user service
+    #   ansible.builtin.copy:
+    #     src: user.service
+    #     dest: /etc/systemd/system/user.service
 
     - name: daemon reload enable and start
       ansible.builtin.systemd_service:
