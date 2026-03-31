@@ -69,7 +69,7 @@
         state: present
 
     - name: connect to mongodb user
-      ansible.builtin.command: mongosh mongodb.sriharidevops17.online --quiet --eval "db.getMongo().getDBNames().indexOf('user')"
+      ansible.builtin.command: mongosh mongodb.sriharidevops17.online --quiet --eval "db.getMongo().getDBNames().indexOf('users')"
       register: user_output
 
     # - name: evaluate user database
@@ -91,6 +91,10 @@
     #     name: user
     #     enabled: yes
     #     state: started
+    - name: copy user service
+      ansible.builtin.copy:
+        src: user.service
+        dest: /etc/systemd/system/user.service
 
     - name: daemon reload enable and start
       ansible.builtin.systemd_service:
