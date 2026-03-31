@@ -35,7 +35,7 @@
 
     - name: delete cart file
       ansible.builtin.file:
-        path: /app
+        path: /tmp/cart.zip
         state: absent
 
     - name: download cart application
@@ -58,19 +58,12 @@
         src: cart.service
         dest: /etc/systemd/system/cart.service
 
-    - name: copy mongo repo
-      ansible.builtin.copy:
-        src: mongo.repo
-        dest: /etc/yum.repos.d/mongo.repo
-
-    - name: install mongodb client
-      ansible.builtin.package:
-        name: mongodb-mongosh
-        state: present
-
-    - name: connect to mongodb cart
-      ansible.builtin.command: mongosh mongodb.sriharidevops17.online --quiet --eval "db.getMongo().getDBNames().indexOf('cart')"
-      register: cart_output
+    - name: daemon reload enable and start
+      ansible.builtin.systemd_service:
+        name: cart
+        enabled: true
+        state: started
+        daemon_reload: true
 
     # - name: evaluate cart database
     #   community.mongodb.mongodb_shell:
@@ -82,19 +75,8 @@
     #   ansible.builtin.debug:
     #     msg: "{{ cart_output }}"
 
-    - name: load products into mongodb
-      ansible.builtin.shell: mongosh --host mongodb.sriharidevops17.online </app/db/master-data.js
-      when: cart_output.stdout | int < 0
-
     # - name: start and enable cart
     #   ansible.builtin.service:
     #     name: cart
     #     enabled: yes
     #     state: started
-
-    - name: daemon reload enable and start
-      ansible.builtin.systemd_service:
-        name: cart
-        enabled: true
-        state: started
-        daemon_reload: true
