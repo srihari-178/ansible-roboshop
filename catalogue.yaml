@@ -40,7 +40,7 @@
 
     - name: extract catalogue application
       ansible.builtin.unarchive:
-        src: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
+        src: /tmp/catalogue.zip
         dest: /app
         remote_src: yes
 

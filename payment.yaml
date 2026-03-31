@@ -42,7 +42,7 @@
 
     - name: extract payment application
       ansible.builtin.unarchive:
-        src: https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip
+        src: /tmp/payment.zip
         dest: /app
         remote_src: yes
 
