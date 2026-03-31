@@ -37,11 +37,6 @@
         state: directory
         path: /app
 
-    - name: delete shipping file
-      ansible.builtin.file:
-        path: /app
-        state: absent
-
     - name: download shipping application
       ansible.builtin.get_url:
         url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
